@@ -1,8 +1,7 @@
-
 # ChatOrbit Frontend
 
 A modern, real-time chat application frontend built with React, TypeScript, and Tailwind CSS. Features dynamic chat rooms, live messaging, and a sleek UI with glass morphism effects.
-
+[Demo] https://preview--orbit-nexus-chat.lovable.app/
 ## 🚀 Features
 
 ### Core Chat Functionality
