@@ -5,44 +5,44 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 213 31% 91%;
+    --background: 240 10% 8%;
+    --foreground: 210 40% 95%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 213 31% 91%;
+    --card: 240 10% 12%;
+    --card-foreground: 210 40% 95%;
 
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
+    --popover: 240 10% 6%;
+    --popover-foreground: 210 20% 75%;
 
-    --primary: 263 70% 50%;
+    --primary: 280 100% 65%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 215 27.9% 16.9%;
+    --secondary: 240 20% 18%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    --muted: 240 20% 16%;
+    --muted-foreground: 220 15% 65%;
 
-    --accent: 215 27.9% 16.9%;
+    --accent: 320 80% 55%;
     --accent-foreground: 210 20% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 20% 98%;
 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 263 70% 50%;
+    --border: 240 20% 20%;
+    --input: 240 20% 16%;
+    --ring: 280 100% 65%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 224 71% 4%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 263 70% 50%;
+    --sidebar-background: 240 10% 6%;
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 280 100% 65%;
     --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 215 27.9% 16.9%;
+    --sidebar-accent: 240 20% 18%;
     --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 215 27.9% 16.9%;
-    --sidebar-ring: 263 70% 50%;
+    --sidebar-border: 240 20% 20%;
+    --sidebar-ring: 280 100% 65%;
   }
 }
 
@@ -54,13 +54,13 @@
   body {
     @apply bg-background text-foreground font-sans;
     background-image: 
-      radial-gradient(at 27% 37%, rgba(121, 22, 255, 0.15) 0px, transparent 50%),
-      radial-gradient(at 97% 21%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 52% 99%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
-      radial-gradient(at 10% 29%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
-      radial-gradient(at 97% 96%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 33% 50%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-      radial-gradient(at 79% 53%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+      radial-gradient(at 27% 37%, rgba(255, 0, 150, 0.15) 0px, transparent 50%),
+      radial-gradient(at 97% 21%, rgba(0, 255, 200, 0.15) 0px, transparent 50%),
+      radial-gradient(at 52% 99%, rgba(150, 0, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 10% 29%, rgba(255, 100, 0, 0.15) 0px, transparent 50%),
+      radial-gradient(at 97% 96%, rgba(0, 200, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 33% 50%, rgba(255, 200, 0, 0.15) 0px, transparent 50%),
+      radial-gradient(at 79% 53%, rgba(200, 0, 255, 0.15) 0px, transparent 50%);
   }
 
   /* Custom scrollbar */
@@ -84,19 +84,19 @@
 
 @layer components {
   .glass-effect {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/5 backdrop-blur-xl border border-white/15;
   }
   
   .glow-border {
-    @apply border border-transparent bg-gradient-to-r from-orbit-purple-500 via-orbit-blue-500 to-orbit-cyan-500 bg-clip-border;
+    @apply border border-transparent bg-gradient-to-r from-pink-500 via-cyan-400 to-purple-500 bg-clip-border;
   }
   
   .text-gradient {
-    @apply bg-gradient-to-r from-orbit-purple-400 via-orbit-blue-400 to-orbit-cyan-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-pink-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent;
   }
   
   .btn-orbit {
-    @apply bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 hover:from-orbit-purple-700 hover:to-orbit-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105;
+    @apply bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105;
   }
   
   .card-orbit {

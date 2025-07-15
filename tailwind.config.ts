@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -68,28 +67,28 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				'orbit-purple': {
-					50: '#f3f1ff',
-					100: '#ebe5ff',
-					200: '#d9ceff',
-					300: '#bea6ff',
-					400: '#9f75ff',
-					500: '#843dff',
-					600: '#7916ff',
-					700: '#6b04fd',
-					800: '#5a03d4',
-					900: '#4b05ad',
+					50: '#faf5ff',
+					100: '#f3e8ff',
+					200: '#e9d5ff',
+					300: '#d8b4fe',
+					400: '#c084fc',
+					500: '#a855f7',
+					600: '#9333ea',
+					700: '#7c3aed',
+					800: '#6b21a8',
+					900: '#581c87',
 				},
 				'orbit-blue': {
-					50: '#eff6ff',
-					100: '#dbeafe',
-					200: '#bfdbfe',
-					300: '#93c5fd',
-					400: '#60a5fa',
-					500: '#3b82f6',
-					600: '#2563eb',
-					700: '#1d4ed8',
-					800: '#1e40af',
-					900: '#1e3a8a',
+					50: '#f0f9ff',
+					100: '#e0f2fe',
+					200: '#bae6fd',
+					300: '#7dd3fc',
+					400: '#38bdf8',
+					500: '#0ea5e9',
+					600: '#0284c7',
+					700: '#0369a1',
+					800: '#075985',
+					900: '#0c4a6e',
 				},
 				'orbit-cyan': {
 					50: '#ecfeff',
@@ -102,6 +101,18 @@ export default {
 					700: '#0e7490',
 					800: '#155e75',
 					900: '#164e63',
+				},
+				'orbit-pink': {
+					50: '#fdf2f8',
+					100: '#fce7f3',
+					200: '#fbcfe8',
+					300: '#f9a8d4',
+					400: '#f472b6',
+					500: '#ec4899',
+					600: '#db2777',
+					700: '#be185d',
+					800: '#9d174d',
+					900: '#831843',
 				}
 			},
 			borderRadius: {
@@ -110,9 +121,9 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			backgroundImage: {
-				'gradient-orbit': 'linear-gradient(135deg, #7916ff 0%, #3b82f6 50%, #06b6d4 100%)',
-				'gradient-orbit-reverse': 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #7916ff 100%)',
-				'gradient-mesh': 'radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 1) 0px, transparent 0%), radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 1) 0px, transparent 50%), radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 1) 0px, transparent 50%), radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 1) 0px, transparent 50%), radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 1) 0px, transparent 50%), radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 1) 0px, transparent 50%), radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 1) 0px, transparent 50%)',
+				'gradient-orbit': 'linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #06b6d4 100%)',
+				'gradient-orbit-reverse': 'linear-gradient(135deg, #06b6d4 0%, #a855f7 50%, #ec4899 100%)',
+				'gradient-mesh': 'radial-gradient(at 27% 37%, hsla(320, 84%, 60%, 1) 0px, transparent 0%), radial-gradient(at 97% 21%, hsla(180, 100%, 70%, 1) 0px, transparent 50%), radial-gradient(at 52% 99%, hsla(280, 100%, 70%, 1) 0px, transparent 50%), radial-gradient(at 10% 29%, hsla(30, 100%, 60%, 1) 0px, transparent 50%), radial-gradient(at 97% 96%, hsla(200, 100%, 70%, 1) 0px, transparent 50%), radial-gradient(at 33% 50%, hsla(50, 100%, 70%, 1) 0px, transparent 50%), radial-gradient(at 79% 53%, hsla(300, 100%, 70%, 1) 0px, transparent 50%)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -154,8 +165,8 @@ export default {
 					'50%': { opacity: '0.8' }
 				},
 				'glow': {
-					'0%, 100%': { boxShadow: '0 0 20px rgba(121, 22, 255, 0.3)' },
-					'50%': { boxShadow: '0 0 30px rgba(121, 22, 255, 0.6)' }
+					'0%, 100%': { boxShadow: '0 0 20px rgba(236, 72, 153, 0.3)' },
+					'50%': { boxShadow: '0 0 30px rgba(236, 72, 153, 0.6)' }
 				}
 			},
 			animation: {
