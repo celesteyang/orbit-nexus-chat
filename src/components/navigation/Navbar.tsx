@@ -3,6 +3,9 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { LanguageToggle } from '@/components/ui/language-toggle';
 import { 
   MessageCircle, 
   Bell, 
@@ -24,6 +27,7 @@ interface NavbarProps {
 
 export const Navbar = ({ currentUser }: NavbarProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <nav className="glass-effect border-b border-white/10 sticky top-0 z-50">
@@ -43,7 +47,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
             
             <Badge variant="secondary" className="hidden sm:flex">
               <Activity className="w-3 h-3 mr-1" />
-              線上
+              {t('nav.online')}
             </Badge>
           </div>
 
@@ -55,7 +59,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
               onClick={() => navigate('/')}
             >
               <Home className="w-4 h-4 mr-2" />
-              首頁
+              {t('nav.home')}
             </Button>
             <Button 
               variant="ghost" 
@@ -63,7 +67,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
               onClick={() => navigate('/rooms')}
             >
               <Users className="w-4 h-4 mr-2" />
-              聊天室
+              {t('nav.rooms')}
             </Button>
             <Button 
               variant="ghost" 
@@ -71,12 +75,15 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
               onClick={() => navigate('/chat')}
             >
               <MessageCircle className="w-4 h-4 mr-2" />
-              即時聊天
+              {t('nav.chat')}
             </Button>
           </div>
 
           {/* Right - User Actions */}
           <div className="flex items-center space-x-3">
+            <ThemeToggle />
+            <LanguageToggle />
+            
             <Button variant="ghost" size="sm" className="relative hover:bg-white/10">
               <Bell className="w-4 h-4" />
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -87,7 +94,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                 {currentUser.isAdmin && (
                   <Badge variant="outline" className="text-amber-400 border-amber-400">
                     <Shield className="w-3 h-3 mr-1" />
-                    管理員
+                    {t('nav.admin')}
                   </Badge>
                 )}
                 
@@ -122,7 +129,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                 className="btn-orbit"
                 onClick={() => navigate('/login')}
               >
-                登入
+                {t('nav.login')}
               </Button>
             )}
           </div>

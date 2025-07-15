@@ -5,6 +5,47 @@
 
 @layer base {
   :root {
+    --background: 240 10% 96%;
+    --foreground: 240 10% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 9%;
+
+    --primary: 280 100% 65%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 320 80% 55%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 280 100% 65%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 280 100% 65%;
+    --sidebar-primary-foreground: 210 20% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 280 100% 65%;
+  }
+
+  .dark {
     --background: 240 10% 8%;
     --foreground: 210 40% 95%;
 
@@ -32,8 +73,6 @@
     --border: 240 20% 20%;
     --input: 240 20% 16%;
     --ring: 280 100% 65%;
-
-    --radius: 0.75rem;
 
     --sidebar-background: 240 10% 6%;
     --sidebar-foreground: 210 40% 95%;
@@ -63,6 +102,17 @@
       radial-gradient(at 79% 53%, rgba(200, 0, 255, 0.15) 0px, transparent 50%);
   }
 
+  .light body {
+    background-image: 
+      radial-gradient(at 27% 37%, rgba(255, 0, 150, 0.08) 0px, transparent 50%),
+      radial-gradient(at 97% 21%, rgba(0, 255, 200, 0.08) 0px, transparent 50%),
+      radial-gradient(at 52% 99%, rgba(150, 0, 255, 0.08) 0px, transparent 50%),
+      radial-gradient(at 10% 29%, rgba(255, 100, 0, 0.08) 0px, transparent 50%),
+      radial-gradient(at 97% 96%, rgba(0, 200, 255, 0.08) 0px, transparent 50%),
+      radial-gradient(at 33% 50%, rgba(255, 200, 0, 0.08) 0px, transparent 50%),
+      radial-gradient(at 79% 53%, rgba(200, 0, 255, 0.08) 0px, transparent 50%);
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
@@ -86,6 +136,10 @@
   .glass-effect {
     @apply bg-white/5 backdrop-blur-xl border border-white/15;
   }
+
+  .light .glass-effect {
+    @apply bg-white/80 border border-black/10;
+  }
   
   .glow-border {
     @apply border border-transparent bg-gradient-to-r from-pink-500 via-cyan-400 to-purple-500 bg-clip-border;
@@ -101,5 +155,9 @@
   
   .card-orbit {
     @apply glass-effect rounded-xl p-6 hover:bg-white/10 transition-all duration-300;
+  }
+
+  .light .card-orbit {
+    @apply hover:bg-black/5;
   }
 }
