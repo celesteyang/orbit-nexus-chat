@@ -9,6 +9,7 @@ import { Navbar } from "./components/navigation/Navbar";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+import Rooms from "./pages/Rooms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/chat/:roomId" element={<Chat />} />
+            <Route path="/rooms" element={<Rooms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

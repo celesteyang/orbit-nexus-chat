@@ -1,23 +1,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Send, 
-  Users, 
-  Settings, 
-  Shield, 
-  Mic, 
-  MicOff,
-  Video,
-  VideoOff,
-  MoreVertical,
-  Ban,
-  Crown
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { MessageItem } from './MessageItem';
+import { MessageInput } from './MessageInput';
+import { OnlineUsers } from './OnlineUsers';
+import { RoomHeader } from './RoomHeader';
+import { useNavigate } from 'react-router-dom';
 
 interface Message {
   id: string;
@@ -25,7 +13,8 @@ interface Message {
   content: string;
   timestamp: Date;
   isAdmin?: boolean;
-  isBanned?: boolean;
+  isModerator?: boolean;
+  isOwn?: boolean;
 }
 
 interface User {
@@ -33,232 +22,164 @@ interface User {
   username: string;
   isOnline: boolean;
   isAdmin?: boolean;
-  role?: 'viewer' | 'moderator' | 'admin';
+  isModerator?: boolean;
 }
 
 export const ChatRoom = () => {
-  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      username: 'StreamHost',
-      content: 'Welcome to ChatOrbit! 🚀 Let\'s start the conversation!',
+      username: '直播主',
+      content: '歡迎來到 ChatOrbit！🚀 讓我們開始聊天吧！',
       timestamp: new Date(),
       isAdmin: true
     },
     {
       id: '2',
-      username: 'TechViewer',
-      content: 'Amazing backend architecture! Love the Redis integration',
+      username: '技術愛好者',
+      content: '太棒了！這個後端架構看起來很厲害 💪',
       timestamp: new Date(),
     },
     {
       id: '3',
-      username: 'CodeMaster',
-      content: 'The WebSocket implementation looks solid 💪',
+      username: '程式高手',
+      content: 'WebSocket 整合看起來很穩定，Redis 也用得很好！',
       timestamp: new Date(),
+      isModerator: true
+    },
+    {
+      id: '4',
+      username: '你',
+      content: '哇！這個聊天室設計得真棒！',
+      timestamp: new Date(),
+      isOwn: true
     }
   ]);
   
   const [users] = useState<User[]>([
-    { id: '1', username: 'StreamHost', isOnline: true, isAdmin: true, role: 'admin' },
-    { id: '2', username: 'TechViewer', isOnline: true, role: 'viewer' },
-    { id: '3', username: 'CodeMaster', isOnline: true, role: 'moderator' },
-    { id: '4', username: 'DevFan', isOnline: false, role: 'viewer' },
+    { id: '1', username: '直播主', isOnline: true, isAdmin: true },
+    { id: '2', username: '技術愛好者', isOnline: true },
+    { id: '3', username: '程式高手', isOnline: true, isModerator: true },
+    { id: '4', username: '你', isOnline: true },
+    { id: '5', username: '觀眾A', isOnline: true },
+    { id: '6', username: '開發者B', isOnline: false },
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [isAutoScroll, setIsAutoScroll] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(false);
   const [isMicOn, setIsMicOn] = useState(false);
+  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isAutoScroll) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isAutoScroll]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 10;
+    setIsAutoScroll(isAtBottom);
+  };
+
+  const handleSendMessage = (content: string) => {
+    // 模擬限流檢查
+    if (Math.random() < 0.1) {
+      setIsRateLimited(true);
+      setTimeout(() => setIsRateLimited(false), 3000);
+      return;
+    }
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      username: 'You',
-      content: message,
+      username: '你',
+      content,
       timestamp: new Date(),
+      isOwn: true
     };
 
     setMessages(prev => [...prev, newMessage]);
-    setMessage('');
   };
 
-  const getRoleColor = (role?: string) => {
-    switch (role) {
-      case 'admin': return 'text-red-400';
-      case 'moderator': return 'text-orbit-purple-400';
-      default: return 'text-orbit-cyan-400';
-    }
-  };
-
-  const getRoleBadge = (role?: string, isAdmin?: boolean) => {
-    if (isAdmin) return <Crown className="w-3 h-3 text-amber-400" />;
-    if (role === 'moderator') return <Shield className="w-3 h-3 text-orbit-purple-400" />;
-    return null;
+  const handleLeaveRoom = () => {
+    navigate('/rooms');
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <Card className="m-4 mb-0 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold">TR</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold">Tech Room</h1>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Users className="w-4 h-4" />
-                <span>{users.filter(u => u.isOnline).length} online</span>
-                <Badge variant="secondary" className="ml-2">Live</Badge>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <RoomHeader
+        roomName="科技討論室"
+        onlineCount={users.filter(u => u.isOnline).length}
+        isVideoOn={isVideoOn}
+        isMicOn={isMicOn}
+        isSoundOn={isSoundOn}
+        onToggleVideo={() => setIsVideoOn(!isVideoOn)}
+        onToggleMic={() => setIsMicOn(!isMicOn)}
+        onToggleSound={() => setIsSoundOn(!isSoundOn)}
+        onLeaveRoom={handleLeaveRoom}
+        isLive={true}
+      />
 
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMicOn(!isMicOn)}
-              className={cn(
-                "w-10 h-10 rounded-full",
-                isMicOn ? "bg-orbit-blue-600 text-white" : "bg-muted"
-              )}
+      {/* Main Content */}
+      <div className="flex-1 flex">
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col p-4 pt-2">
+          <Card className="flex-1 flex flex-col overflow-hidden">
+            {/* Messages */}
+            <div 
+              ref={messagesContainerRef}
+              className="flex-1 overflow-y-auto p-4 space-y-2"
+              onScroll={handleScroll}
             >
-              {isMicOn ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsVideoOn(!isVideoOn)}
-              className={cn(
-                "w-10 h-10 rounded-full",
-                isVideoOn ? "bg-orbit-blue-600 text-white" : "bg-muted"
-              )}
-            >
-              {isVideoOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
-            </Button>
-
-            <Button variant="ghost" size="sm" className="w-10 h-10 rounded-full">
-              <Settings className="w-4 h-4" />
-            </Button>
-          </div>
-        </Card>
-
-        {/* Messages */}
-        <div className="flex-1 p-4 pt-2 overflow-hidden">
-          <Card className="h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg) => (
-                <div key={msg.id} className="group">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                      {msg.username[0].toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <span className={cn("font-medium text-sm", getRoleColor())}>
-                          {msg.username}
-                        </span>
-                        {getRoleBadge(undefined, msg.isAdmin)}
-                        <span className="text-xs text-muted-foreground">
-                          {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="opacity-0 group-hover:opacity-100 w-6 h-6 p-0"
-                        >
-                          <MoreVertical className="w-3 h-3" />
-                        </Button>
-                      </div>
-                      <p className="text-sm mt-1 break-words">{msg.content}</p>
-                    </div>
-                  </div>
-                </div>
+              {messages.map((message) => (
+                <MessageItem key={message.id} message={message} />
               ))}
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Auto-scroll indicator */}
+            {!isAutoScroll && (
+              <div className="px-4 py-2 border-t border-white/10">
+                <button
+                  onClick={() => setIsAutoScroll(true)}
+                  className="text-xs text-orbit-cyan-400 hover:text-orbit-cyan-300 transition-colors"
+                >
+                  ↓ 點擊回到最新訊息
+                </button>
+              </div>
+            )}
+
             {/* Message Input */}
-            <div className="border-t border-border p-4">
-              <form onSubmit={handleSendMessage} className="flex space-x-2">
-                <Input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 glass-effect"
-                />
-                <Button type="submit" className="btn-orbit px-4">
-                  <Send className="w-4 h-4" />
-                </Button>
-              </form>
+            <div className="border-t border-white/10 p-4">
+              <MessageInput
+                onSendMessage={handleSendMessage}
+                isBlocked={isBlocked}
+                isRateLimited={isRateLimited}
+                placeholder="輸入訊息..."
+              />
             </div>
           </Card>
         </div>
-      </div>
 
-      {/* Sidebar - Users List */}
-      <div className="w-80 p-4 pl-0">
-        <Card className="h-full">
-          <div className="p-4 border-b border-border">
-            <h3 className="font-semibold flex items-center">
-              <Users className="w-4 h-4 mr-2" />
-              Users ({users.length})
-            </h3>
-          </div>
-          
-          <div className="p-4 space-y-3 overflow-y-auto">
-            {users.map((user) => (
-              <div key={user.id} className="flex items-center justify-between group">
-                <div className="flex items-center space-x-3">
-                  <div className="relative">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center text-white text-xs font-bold">
-                      {user.username[0].toUpperCase()}
-                    </div>
-                    <div className={cn(
-                      "absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-background",
-                      user.isOnline ? "bg-green-500" : "bg-gray-500"
-                    )} />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-1">
-                      <span className={cn("text-sm font-medium", getRoleColor(user.role))}>
-                        {user.username}
-                      </span>
-                      {getRoleBadge(user.role, user.isAdmin)}
-                    </div>
-                    <span className="text-xs text-muted-foreground capitalize">
-                      {user.role}
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="opacity-0 group-hover:opacity-100 w-8 h-8 p-0 text-red-400 hover:text-red-300"
-                >
-                  <Ban className="w-3 h-3" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        </Card>
+        {/* Sidebar - Online Users */}
+        <div className="w-80 p-4 pl-0">
+          <OnlineUsers 
+            users={users} 
+            currentUserId="4"
+          />
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 import { 
   MessageCircle, 
   Bell, 
@@ -9,7 +10,9 @@ import {
   User,
   LogOut,
   Activity,
-  Shield
+  Shield,
+  Home,
+  Users
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -20,13 +23,18 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ currentUser }: NavbarProps) => {
+  const navigate = useNavigate();
+
   return (
     <nav className="glass-effect border-b border-white/10 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+            <div 
+              className="flex items-center space-x-2 cursor-pointer"
+              onClick={() => navigate('/')}
+            >
               <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
@@ -35,22 +43,43 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
             
             <Badge variant="secondary" className="hidden sm:flex">
               <Activity className="w-3 h-3 mr-1" />
-              Live
+              線上
             </Badge>
           </div>
 
           {/* Center - Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <Button variant="ghost" className="text-sm">Dashboard</Button>
-            <Button variant="ghost" className="text-sm">Rooms</Button>
-            <Button variant="ghost" className="text-sm">Analytics</Button>
+            <Button 
+              variant="ghost" 
+              className="text-sm hover:text-orbit-cyan-400"
+              onClick={() => navigate('/')}
+            >
+              <Home className="w-4 h-4 mr-2" />
+              首頁
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-sm hover:text-orbit-purple-400"
+              onClick={() => navigate('/rooms')}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              聊天室
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-sm hover:text-orbit-blue-400"
+              onClick={() => navigate('/chat')}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              即時聊天
+            </Button>
           </div>
 
           {/* Right - User Actions */}
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative hover:bg-white/10">
               <Bell className="w-4 h-4" />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
             </Button>
 
             {currentUser && (
@@ -58,7 +87,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                 {currentUser.isAdmin && (
                   <Badge variant="outline" className="text-amber-400 border-amber-400">
                     <Shield className="w-3 h-3 mr-1" />
-                    Admin
+                    管理員
                   </Badge>
                 )}
                 
@@ -73,19 +102,27 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                   </span>
                 </div>
 
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="hover:bg-white/10">
                   <Settings className="w-4 h-4" />
                 </Button>
 
-                <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  onClick={() => navigate('/login')}
+                >
                   <LogOut className="w-4 h-4" />
                 </Button>
               </>
             )}
 
             {!currentUser && (
-              <Button className="btn-orbit">
-                Sign In
+              <Button 
+                className="btn-orbit"
+                onClick={() => navigate('/login')}
+              >
+                登入
               </Button>
             )}
           </div>
