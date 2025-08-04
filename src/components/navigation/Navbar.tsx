@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { LanguageToggle } from '@/components/ui/language-toggle';
+import { useUser } from '../providers/UserContext';
 import { 
   MessageCircle, 
   Bell, 
@@ -28,6 +29,7 @@ interface NavbarProps {
 export const Navbar = ({ currentUser }: NavbarProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { logout } = useUser();
 
   return (
     <nav className="glass-effect border-b border-white/10 sticky top-0 z-50">
@@ -98,7 +100,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                   </Badge>
                 )}
                 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/profile')}>
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center">
                     <span className="text-white text-xs font-bold">
                       {currentUser.username[0].toUpperCase()}
@@ -117,7 +119,7 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
                   variant="ghost" 
                   size="sm" 
                   className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                  onClick={() => navigate('/login')}
+                  onClick={async () => { await logout(); navigate('/login'); }}
                 >
                   <LogOut className="w-4 h-4" />
                 </Button>
