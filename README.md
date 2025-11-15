@@ -194,6 +194,37 @@ npm run test:watch
 npm run test:coverage
 ```
 
+## Docker
+
+### Building the Docker image
+To build the docker image, run:
+```bash
+docker build -t frontend .
+```
+
+### Running the Docker image
+To run the docker image, run:
+```bash
+docker run --rm -it -p 8080:80 frontend
+```
+You can now access the frontend app at `localhost:8080`.
+
+### Pushing the image to DockerHub
+Docker Hub requires:
+```bash
+dockerhub-username/repository-name:tag
+```
+
+To push the image to DockerHub, you first need to re-tag it:
+```bash
+docker tag frontend <dockerhub-username>/<repository-name>:<tag>
+```
+
+And then push it:
+```bash
+docker push <dockerhub-username>/<repository-name>:<tag>
+```
+
 ## 🚀 Deployment
 
 ### Using Lovable (Recommended)
