@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, Container } from '@/components/ui/layout';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import {
   Server,
   Database
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = () => {
   const stats = [
@@ -26,7 +26,7 @@ export const Dashboard = () => {
 
   const rooms = [
     { 
-      id: '1', 
+      id: 'tech-talk', // Use backend room ID
       name: 'Tech Talk', 
       users: 89, 
       messages: 1234, 
@@ -34,7 +34,7 @@ export const Dashboard = () => {
       category: 'Technology'
     },
     { 
-      id: '2', 
+      id: 'gaming-zone',
       name: 'Gaming Zone', 
       users: 156, 
       messages: 2341, 
@@ -42,7 +42,7 @@ export const Dashboard = () => {
       category: 'Gaming'
     },
     { 
-      id: '3', 
+      id: 'dev-chat',
       name: 'Dev Chat', 
       users: 67, 
       messages: 987, 
@@ -50,7 +50,7 @@ export const Dashboard = () => {
       category: 'Development'
     },
     { 
-      id: '4', 
+      id: 'general', // Use backend room ID for General
       name: 'General', 
       users: 234, 
       messages: 3456, 
@@ -65,6 +65,8 @@ export const Dashboard = () => {
     { icon: Shield, title: 'Admin Controls', desc: 'User management & moderation' },
     { icon: Server, title: 'MongoDB Logging', desc: 'Message persistence' }
   ];
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen">
@@ -121,7 +123,12 @@ export const Dashboard = () => {
                         <MessageCircle className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-medium">{room.name}</h3>
+                        <h3
+                          className="font-medium cursor-pointer hover:underline"
+                          onClick={() => navigate(`/chat/${room.id}`)}
+                        >
+                          {room.name}
+                        </h3>
                         <p className="text-sm text-muted-foreground">{room.category}</p>
                       </div>
                     </div>

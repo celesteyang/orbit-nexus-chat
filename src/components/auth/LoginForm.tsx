@@ -36,12 +36,18 @@ export const LoginForm = () => {
       });
 
       console.log('Login successful:', response.data);
-      const { user } = response.data;
+      
+      const token = response.data.token;
+
+      localStorage.setItem('token', token);
+
+      // Decode the JWT to get user info
+      const payload = JSON.parse(atob(token.split('.')[1]));
       const formattedUser = {
-        username: user.Username, // 這裡從後端回應的 "Username" 屬性取值
-        isAdmin: false, // 假設isAdmin預設為 false，或從後端獲取
-        // 可以在這裡加入更多你需要的屬性
-      };
+        username: payload.email,
+        isAdmin: false
+      };
+
 
       // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
       login(formattedUser);
@@ -53,6 +59,7 @@ export const LoginForm = () => {
       if (axios.isAxiosError(err) && err.response) {
         setError(err.response.data.error || '登入失敗，請檢查電子郵件和密碼。');
       } else {
+        console.error(err);
         setError('發生未知錯誤。');
       }
     } finally {
