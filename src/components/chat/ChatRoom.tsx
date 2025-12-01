@@ -43,6 +43,8 @@ export const ChatRoom = () => {
   const ws = React.useRef<WebSocket | null>(null);
   const { currentUser } = useUser();
   const currentUserId = currentUser?.id;
+  const normalizedRoomId = roomId || 'general';
+  const displayRoomName = normalizedRoomId.charAt(0).toUpperCase() + normalizedRoomId.slice(1);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -119,7 +121,7 @@ export const ChatRoom = () => {
   // Send message via WebSocket
   const handleSendMessage = (content: string) => {
     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
-    ws.current.send(JSON.stringify({ room_id: roomId, content }));
+    ws.current.send(JSON.stringify({ room_id: normalizedRoomId, content }));
     // Optimistically add message to UI
     setMessages(prev => sortMessagesByTime([...prev, {
       id: Math.random().toString(36).slice(2),
@@ -133,10 +135,10 @@ export const ChatRoom = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <RoomHeader
-        roomName="General"
+        roomName={displayRoomName}
         onlineCount={5}
         isLive={true}
-        onLeaveRoom={() => navigate('/rooms')}
+        onLeaveRoom={() => navigate('/')}
       />
       <div className="flex-1 flex">
         <div className="flex-1 flex flex-col p-4 pt-2">

@@ -84,7 +84,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
             <Card key={index} className="relative overflow-hidden">
               <div className="flex items-center justify-between">
@@ -103,7 +103,7 @@ export const Dashboard = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orbit-purple-600/10 to-orbit-blue-600/10 rounded-full -translate-y-16 translate-x-16" />
             </Card>
           ))}
-        </div>
+        </div> */}
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
