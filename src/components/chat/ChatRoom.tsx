@@ -133,35 +133,38 @@ export const ChatRoom = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <RoomHeader
-        roomName={displayRoomName}
-        onlineCount={5}
-        isLive={true}
-        onLeaveRoom={() => navigate('/')}
-      />
-      <div className="flex-1 flex">
-        <div className="flex-1 flex flex-col p-4 pt-2">
-          <Card className="flex-1 flex flex-col overflow-hidden">
-            <div
-              ref={messagesContainerRef}
-              className="flex-1 overflow-y-auto p-4 space-y-2"
-              onScroll={handleScroll}
-            >
-              {messages.map((message) => (
-                <MessageItem key={message.id} message={message} />
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className="w-full flex justify-end p-2 bg-transparent">
-              <MessageInput 
-                onSendMessage={handleSendMessage} 
-                placeholder="Type a message..."
-              />
-            </div>
-          </Card>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-background/95 to-background/90 pt-24 px-3 sm:px-6 lg:px-8">
+      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col gap-4">
+        <RoomHeader
+          roomName={displayRoomName}
+          onlineCount={5}
+          isLive={true}
+          onLeaveRoom={() => navigate('/')}
+          className="shadow-2xl"
+        />
+        <div className="flex-1 flex">
+          <div className="flex-1 flex flex-col">
+            <Card className="flex-1 flex flex-col overflow-hidden rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl">
+              <div
+                ref={messagesContainerRef}
+                className="flex-1 overflow-y-auto p-4 space-y-2"
+                onScroll={handleScroll}
+              >
+                {messages.map((message) => (
+                  <MessageItem key={message.id} message={message} />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+              <div className="w-full flex justify-end p-2 bg-transparent">
+                <MessageInput 
+                  onSendMessage={handleSendMessage} 
+                  placeholder="Type a message..."
+                />
+              </div>
+            </Card>
+          </div>
+          {/* OnlineUsers sidebar */}
         </div>
-        {/* OnlineUsers sidebar */}
       </div>
     </div>
   );
