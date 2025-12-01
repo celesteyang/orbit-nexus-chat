@@ -1,7 +1,8 @@
 // src/components/providers/UserContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
 const API_BASE_URL = 'http://localhost:8089';
+const USER_STORAGE_KEY = 'currentUser';
 
 // 定義用戶資訊的型別
 interface User {
@@ -28,6 +29,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (user: User) => {
     setCurrentUser(user);
+    try {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    } catch (err) {
+      console.error('Failed to persist user session:', err);
+    }
   };
 
   const logout = async () => {
@@ -37,7 +43,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout failed:', err);
     }
     setCurrentUser(null);
+    try {
+      localStorage.removeItem(USER_STORAGE_KEY);
+    } catch (storageErr) {
+      console.error('Failed to clear user session:', storageErr);
+    }
   };
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(USER_STORAGE_KEY);
+      if (!stored) return;
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.id && parsed.username) {
+        setCurrentUser(parsed);
+      }
+    } catch (err) {
+      console.error('Failed to restore user session:', err);
+      localStorage.removeItem(USER_STORAGE_KEY);
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ currentUser, login, logout }}>
