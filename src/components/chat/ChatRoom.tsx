@@ -28,6 +28,9 @@ interface WsMessage extends ApiMessage {
   room_id: string;
 }
 
+const sortMessagesByTime = (msgs: Message[]) =>
+  msgs.slice().sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
 export const ChatRoom = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -65,13 +68,14 @@ export const ChatRoom = () => {
         }
         console.log('Received message:', msg);
         console.log('Current user:', currentUser);
-        return [...prev, {
+        const next = [...prev, {
           id: msg.id,
           username: msg.user_id,
           content: msg.content,
           timestamp: new Date(msg.timestamp),
           isOwn: isOwnMessage
         }];
+        return sortMessagesByTime(next);
       });
     };
     return () => {
@@ -88,13 +92,13 @@ export const ChatRoom = () => {
       .then(res => res.json())
       .then((data: ApiMessage[]) => {
         // Map API response to Message type
-        const formatted = data.map((msg) => ({
+        const formatted = sortMessagesByTime(data.map((msg) => ({
           id: msg.id,
           username: msg.user_id, // If you have username mapping, replace this
           content: msg.content,
           timestamp: new Date(msg.timestamp),
           isOwn: currentUserId ? msg.user_id === currentUserId : false
-        }));
+        })));
         setMessages(formatted);
       });
   }, [roomId, currentUserId]);
@@ -117,13 +121,13 @@ export const ChatRoom = () => {
     if (!ws.current || ws.current.readyState !== WebSocket.OPEN) return;
     ws.current.send(JSON.stringify({ room_id: roomId, content }));
     // Optimistically add message to UI
-    setMessages(prev => [...prev, {
+    setMessages(prev => sortMessagesByTime([...prev, {
       id: Math.random().toString(36).slice(2),
       username: currentUser ? currentUser.username : '',
       content,
       timestamp: new Date(),
       isOwn: true
-    }]);
+    }]));
   };
 
   return (
