@@ -7,6 +7,7 @@ const API_BASE_URL = 'http://localhost:8089';
 interface User {
   id: string;
   username: string;
+  email?: string;
   isAdmin: boolean;
   // 可以加入更多用戶資訊，例如 id, email, 等級等
 }

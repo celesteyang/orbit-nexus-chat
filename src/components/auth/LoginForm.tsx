@@ -37,7 +37,15 @@ export const LoginForm = () => {
 
       console.log('Login successful:', response.data);
       
-      const token = response.data.token;
+      const { token, user } = response.data as {
+        token: string;
+        user?: {
+          id?: string;
+          username?: string;
+          email?: string;
+          isAdmin?: boolean;
+        };
+      };
 
       localStorage.setItem('token', token);
 
@@ -46,12 +54,16 @@ export const LoginForm = () => {
         user_id?: string;
         sub?: string;
         email?: string;
+        username?: string;
         isAdmin?: boolean;
       };
+      const primaryEmail = user?.email || payload.email || formData.email;
+      const fallbackUsername = primaryEmail ? primaryEmail.split('@')[0] : '';
       const formattedUser = {
-        id: payload.user_id || payload.sub || '',
-        username: payload.email || formData.email,
-        isAdmin: Boolean(payload.isAdmin)
+        id: user?.id || payload.user_id || payload.sub || '',
+        username: user?.username || payload.username || fallbackUsername || primaryEmail || '',
+        email: primaryEmail,
+        isAdmin: user?.isAdmin ?? Boolean(payload.isAdmin)
       };
       // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
       login(formattedUser);
