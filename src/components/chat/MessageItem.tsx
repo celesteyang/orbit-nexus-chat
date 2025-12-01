@@ -107,10 +107,7 @@ export const MessageItem = ({ message }: MessageItemProps) => {
             </span>
           </div>
           
-          <div className={cn(
-            "text-sm break-words leading-relaxed",
-            message.isOwn ? "text-white" : "text-foreground"
-          )}>
+          <div className="text-sm break-words leading-relaxed text-foreground">
             {message.content}
           </div>
         </div>
