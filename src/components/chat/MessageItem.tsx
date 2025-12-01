@@ -4,6 +4,9 @@ import { Crown, Shield } from 'lucide-react';
 import { useUser } from '../providers/UserContext';
 import axios from 'axios';
 
+const usernameCache = new Map<string, string>();
+const fetchPromises = new Map<string, Promise<string>>();
+
 interface MessageItemProps {
   message: {
     id: string;
@@ -21,14 +24,44 @@ export const MessageItem = ({ message }: MessageItemProps) => {
   const [username, setUsername] = React.useState<string>(message.username);
 
   React.useEffect(() => {
-    // Only fetch if not own message and username looks like an ID
-    if (!message.isOwn && message.username.length === 24) {
-      axios.get(`http://localhost:8087/user/${message.username}`)
-        .then(res => {
-          if (res.data && res.data.name) setUsername(res.data.name);
-        })
-        .catch(() => setUsername(message.username));
+    if (message.isOwn || message.username.length !== 24) {
+      return;
     }
+
+    const cached = usernameCache.get(message.username);
+    if (cached) {
+      setUsername(cached);
+      return;
+    }
+
+    let isActive = true;
+    let request = fetchPromises.get(message.username);
+
+    if (!request) {
+      request = axios
+        .get(`http://localhost:8087/user/${message.username}`)
+        .then(res => {
+          const name = res.data?.name || res.data?.username || message.username;
+          usernameCache.set(message.username, name);
+          fetchPromises.delete(message.username);
+          return name;
+        })
+        .catch(() => {
+          fetchPromises.delete(message.username);
+          return message.username;
+        });
+      fetchPromises.set(message.username, request);
+    }
+
+    request.then(name => {
+      if (isActive) {
+        setUsername(name);
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
   }, [message.username, message.isOwn]);
 
   const displayName = message.isOwn && currentUser ? currentUser.username : username;
