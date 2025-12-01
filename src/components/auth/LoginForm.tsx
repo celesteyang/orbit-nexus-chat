@@ -42,15 +42,19 @@ export const LoginForm = () => {
       localStorage.setItem('token', token);
 
       // Decode the JWT to get user info
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const formattedUser = {
-        username: payload.email,
-        isAdmin: false
+      const payload = JSON.parse(atob(token.split('.')[1])) as {
+        user_id?: string;
+        sub?: string;
+        email?: string;
+        isAdmin?: boolean;
       };
-
-
-      // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
-      login(formattedUser);
+      const formattedUser = {
+        id: payload.user_id || payload.sub || '',
+        username: payload.email || formData.email,
+        isAdmin: Boolean(payload.isAdmin)
+      };
+      // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
+      login(formattedUser);
       // 導航到主頁
       navigate('/');
       

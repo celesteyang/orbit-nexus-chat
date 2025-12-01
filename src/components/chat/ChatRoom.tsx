@@ -17,6 +17,17 @@ interface Message {
   isOwn?: boolean;
 }
 
+interface ApiMessage {
+  id: string;
+  user_id: string;
+  content: string;
+  timestamp: string;
+}
+
+interface WsMessage extends ApiMessage {
+  room_id: string;
+}
+
 export const ChatRoom = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -28,6 +39,7 @@ export const ChatRoom = () => {
   // WebSocket connection
   const ws = React.useRef<WebSocket | null>(null);
   const { currentUser } = useUser();
+  const currentUserId = currentUser?.id;
 
   useEffect(() => {
     if (!currentUser) return;
@@ -45,19 +57,27 @@ export const ChatRoom = () => {
       console.log('WebSocket closed');
     };
     ws.current.onmessage = (event) => {
-      console.log('WebSocket message received:', event.data); // Debug incoming messages
-      const msg = JSON.parse(event.data);
-      setMessages(prev => [...prev, {
-        id: msg.id,
-        username: msg.user_id,
-        content: msg.content,
-        timestamp: new Date(msg.timestamp)
-      }]);
+      const msg = JSON.parse(event.data) as WsMessage;
+      setMessages(prev => {
+        const isOwnMessage = Boolean(currentUserId && msg.user_id === currentUserId);
+        if (isOwnMessage) {
+          return prev;
+        }
+        console.log('Received message:', msg);
+        console.log('Current user:', currentUser);
+        return [...prev, {
+          id: msg.id,
+          username: msg.user_id,
+          content: msg.content,
+          timestamp: new Date(msg.timestamp),
+          isOwn: isOwnMessage
+        }];
+      });
     };
     return () => {
       ws.current?.close();
     };
-  }, [currentUser, roomId]);
+  }, [currentUser, currentUserId, roomId]);
 
   // Fetch chat history from backend API
   useEffect(() => {
@@ -66,17 +86,18 @@ export const ChatRoom = () => {
     const apiRoomId = roomId.toLowerCase() === "general" ? "general" : roomId;
     fetch(`http://localhost:8088/chat/history/${apiRoomId}`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: ApiMessage[]) => {
         // Map API response to Message type
-        const formatted = data.map((msg: any) => ({
+        const formatted = data.map((msg) => ({
           id: msg.id,
           username: msg.user_id, // If you have username mapping, replace this
           content: msg.content,
-          timestamp: new Date(msg.timestamp)
+          timestamp: new Date(msg.timestamp),
+          isOwn: currentUserId ? msg.user_id === currentUserId : false
         }));
         setMessages(formatted);
       });
-  }, [roomId]);
+  }, [roomId, currentUserId]);
 
   // Auto-scroll logic
   useEffect(() => {

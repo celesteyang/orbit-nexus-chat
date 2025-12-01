@@ -21,6 +21,7 @@ import {
 
 interface NavbarProps {
   currentUser?: {
+    id: string;
     username: string;
     isAdmin?: boolean;
   };
