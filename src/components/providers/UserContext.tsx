@@ -20,6 +20,41 @@ interface UserContextType {
   logout: () => void;
 }
 
+const persistUserSession = (value: User | null) => {
+  if (typeof window === 'undefined') return;
+  try {
+    if (value) {
+      const payload = JSON.stringify(value);
+      window.sessionStorage.setItem(USER_STORAGE_KEY, payload);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    } else {
+      window.sessionStorage.removeItem(USER_STORAGE_KEY);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    }
+  } catch (err) {
+    console.error('Failed to persist user session:', err);
+  }
+};
+
+const readStoredUser = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const sessionValue = window.sessionStorage.getItem(USER_STORAGE_KEY);
+    if (sessionValue) {
+      return sessionValue;
+    }
+    const localValue = window.localStorage.getItem(USER_STORAGE_KEY);
+    if (localValue) {
+      window.sessionStorage.setItem(USER_STORAGE_KEY, localValue);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    }
+    return localValue;
+  } catch (err) {
+    console.error('Failed to access user session storage:', err);
+    return null;
+  }
+};
+
 // 建立上下文
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -29,11 +64,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (user: User) => {
     setCurrentUser(user);
-    try {
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
-    } catch (err) {
-      console.error('Failed to persist user session:', err);
-    }
+    persistUserSession(user);
   };
 
   const logout = async () => {
@@ -43,24 +74,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout failed:', err);
     }
     setCurrentUser(null);
-    try {
-      localStorage.removeItem(USER_STORAGE_KEY);
-    } catch (storageErr) {
-      console.error('Failed to clear user session:', storageErr);
-    }
+    persistUserSession(null);
   };
 
   useEffect(() => {
+    const stored = readStoredUser();
+    if (!stored) return;
     try {
-      const stored = localStorage.getItem(USER_STORAGE_KEY);
-      if (!stored) return;
       const parsed = JSON.parse(stored);
       if (parsed && parsed.id && parsed.username) {
         setCurrentUser(parsed);
       }
     } catch (err) {
       console.error('Failed to restore user session:', err);
-      localStorage.removeItem(USER_STORAGE_KEY);
+      persistUserSession(null);
     }
   }, []);
 

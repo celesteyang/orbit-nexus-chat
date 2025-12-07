@@ -9,6 +9,17 @@ import { Eye, EyeOff, MessageCircle, Zap } from 'lucide-react';
 import { useUser } from '../providers/UserContext';
 const API_BASE_URL = 'http://localhost:8089';
 
+const persistToken = (token: string) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem('token', token);
+    window.localStorage.removeItem('token');
+  } catch (err) {
+    console.error('Failed to persist token in sessionStorage:', err);
+    window.localStorage.setItem('token', token);
+  }
+};
+
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -47,7 +58,7 @@ export const LoginForm = () => {
         };
       };
 
-      localStorage.setItem('token', token);
+      persistToken(token);
 
       // Decode the JWT to get user info
       const payload = JSON.parse(atob(token.split('.')[1])) as {

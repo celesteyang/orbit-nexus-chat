@@ -28,6 +28,16 @@ interface WsMessage extends ApiMessage {
   room_id: string;
 }
 
+const getStoredToken = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.sessionStorage.getItem('token') ?? window.localStorage.getItem('token');
+  } catch (err) {
+    console.error('Failed to read auth token from storage:', err);
+    return null;
+  }
+};
+
 const sortMessagesByTime = (msgs: Message[]) =>
   msgs.slice().sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
@@ -49,7 +59,7 @@ export const ChatRoom = () => {
   useEffect(() => {
     if (!currentUser) return;
     // Replace with your JWT token logic
-    const token = localStorage.getItem('token');
+    const token = getStoredToken();
     if (!token) return;
     ws.current = new WebSocket(`ws://localhost:8088/ws/chat?token=${token}`);
     ws.current.onopen = () => {
