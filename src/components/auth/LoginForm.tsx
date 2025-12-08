@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, MessageCircle, Zap } from 'lucide-react';
 import { useUser } from '../providers/UserContext';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
 
 const persistToken = (token: string) => {
   if (typeof window === 'undefined') return;

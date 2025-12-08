@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessageCircle, User, Shield, Lock, Loader2 } from 'lucide-react';
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
 const Profile = () => {
     const { currentUser } = useUser();
     const navigate = useNavigate();

@@ -39,7 +39,7 @@ export const MessageItem = ({ message }: MessageItemProps) => {
 
     if (!request) {
       request = axios
-        .get(`http://localhost:8087/user/${message.username}`)
+        .get(`http://35.229.145.142:8087/user/${message.username}`)
         .then(res => {
           const name = res.data?.name || res.data?.username || message.username;
           usernameCache.set(message.username, name);

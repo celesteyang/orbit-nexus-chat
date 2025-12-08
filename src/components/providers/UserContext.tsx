@@ -1,7 +1,7 @@
 // src/components/providers/UserContext.tsx
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
 const USER_STORAGE_KEY = 'currentUser';
 
 // 定義用戶資訊的型別

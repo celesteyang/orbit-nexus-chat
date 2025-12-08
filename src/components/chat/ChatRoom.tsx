@@ -61,7 +61,7 @@ export const ChatRoom = () => {
     // Replace with your JWT token logic
     const token = getStoredToken();
     if (!token) return;
-    ws.current = new WebSocket(`ws://localhost:8088/ws/chat?token=${token}`);
+    ws.current = new WebSocket(`ws://104.199.177.140:8088/ws/chat?token=${token}`);
     ws.current.onopen = () => {
       console.log('WebSocket connected');
     };
@@ -100,7 +100,7 @@ export const ChatRoom = () => {
     if (!roomId) return;
     // Always use lowercase for roomId, and map "General" to "general"
     const apiRoomId = roomId.toLowerCase() === "general" ? "general" : roomId;
-    fetch(`http://localhost:8088/chat/history/${apiRoomId}`)
+    fetch(`http://104.199.177.140:8088/chat/history/${apiRoomId}`)
       .then(res => res.json())
       .then((data: ApiMessage[]) => {
         // Map API response to Message type
