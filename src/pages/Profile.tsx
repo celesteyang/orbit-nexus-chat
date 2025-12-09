@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessageCircle, User, Shield, Lock, Loader2 } from 'lucide-react';
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
 const Profile = () => {
     const { currentUser } = useUser();
     const navigate = useNavigate();
@@ -72,7 +72,7 @@ const Profile = () => {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <div className="text-muted-foreground">帳號：{currentUser.username}</div>
+                            <div className="text-muted-foreground">帳號：{currentUser.email || currentUser.username}</div>
                             <div className="text-muted-foreground">權限：{currentUser.isAdmin ? 'Admin' : 'User'}</div>
                         </div>
                         <Button className="w-full mt-6 btn-orbit" onClick={() => setShowChangePwd(v => !v)}>

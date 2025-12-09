@@ -7,7 +7,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, MessageCircle, Zap } from 'lucide-react';
 import { useUser } from '../providers/UserContext';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
+
+const persistToken = (token: string) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem('token', token);
+    window.localStorage.removeItem('token');
+  } catch (err) {
+    console.error('Failed to persist token in sessionStorage:', err);
+    window.localStorage.setItem('token', token);
+  }
+};
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,15 +47,37 @@ export const LoginForm = () => {
       });
 
       console.log('Login successful:', response.data);
-      const { user } = response.data;
-      const formattedUser = {
-        username: user.Username, // 這裡從後端回應的 "Username" 屬性取值
-        isAdmin: false, // 假設isAdmin預設為 false，或從後端獲取
-        // 可以在這裡加入更多你需要的屬性
-      };
+      
+      const { token, user } = response.data as {
+        token: string;
+        user?: {
+          id?: string;
+          username?: string;
+          email?: string;
+          isAdmin?: boolean;
+        };
+      };
 
-      // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
-      login(formattedUser);
+      persistToken(token);
+
+      // Decode the JWT to get user info
+      const payload = JSON.parse(atob(token.split('.')[1])) as {
+        user_id?: string;
+        sub?: string;
+        email?: string;
+        username?: string;
+        isAdmin?: boolean;
+      };
+      const primaryEmail = user?.email || payload.email || formData.email;
+      const fallbackUsername = primaryEmail ? primaryEmail.split('@')[0] : '';
+      const formattedUser = {
+        id: user?.id || payload.user_id || payload.sub || '',
+        username: user?.username || payload.username || fallbackUsername || primaryEmail || '',
+        email: primaryEmail,
+        isAdmin: user?.isAdmin ?? Boolean(payload.isAdmin)
+      };
+      // 呼叫 login 函式，將格式化後的使用者資訊存入全局狀態
+      login(formattedUser);
       // 導航到主頁
       navigate('/');
       
@@ -53,6 +86,7 @@ export const LoginForm = () => {
       if (axios.isAxiosError(err) && err.response) {
         setError(err.response.data.error || '登入失敗，請檢查電子郵件和密碼。');
       } else {
+        console.error(err);
         setError('發生未知錯誤。');
       }
     } finally {

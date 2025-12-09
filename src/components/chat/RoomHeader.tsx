@@ -28,6 +28,7 @@ interface RoomHeaderProps {
   onToggleSound?: () => void;
   onLeaveRoom?: () => void;
   isLive?: boolean;
+  className?: string;
 }
 
 export const RoomHeader = ({
@@ -40,11 +41,16 @@ export const RoomHeader = ({
   onToggleMic,
   onToggleSound,
   onLeaveRoom,
-  isLive = true
+  isLive = true,
+  className
 }: RoomHeaderProps) => {
   return (
-    <Card className="m-4 mb-0">
-      <div className="flex items-center justify-between p-4">
+    <Card className={cn(
+      "w-full p-0 rounded-2xl border border-white/10 shadow-2xl backdrop-blur-2xl bg-gradient-to-br from-background/95 via-background/80 to-background/60",
+      "dark:from-background/80 dark:via-background/60 dark:to-background/40",
+      className
+    )}>
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6">
         <div className="flex items-center space-x-4">
           {/* Back Button */}
           <Button
@@ -58,7 +64,7 @@ export const RoomHeader = ({
 
           {/* Room Info */}
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center relative">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-orbit-purple-600 to-orbit-blue-600 flex items-center justify-center relative shadow-lg">
               <span className="text-white font-bold text-lg">
                 {roomName[0]?.toUpperCase() || 'R'}
               </span>
@@ -70,8 +76,8 @@ export const RoomHeader = ({
             </div>
             
             <div>
-              <h1 className="text-xl font-bold text-gradient">{roomName}</h1>
-              <div className="flex items-center space-x-3 text-sm text-muted-foreground">
+              <h1 className="text-2xl font-bold text-gradient">{roomName}</h1>
+              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center space-x-1">
                   <Users className="w-4 h-4" />
                   <span>{onlineCount} 人在線</span>

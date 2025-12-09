@@ -1,11 +1,14 @@
 // src/components/providers/UserContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8089';
+const API_BASE_URL = 'http://35.201.233.231:8089';
+const USER_STORAGE_KEY = 'currentUser';
 
 // 定義用戶資訊的型別
 interface User {
+  id: string;
   username: string;
+  email?: string;
   isAdmin: boolean;
   // 可以加入更多用戶資訊，例如 id, email, 等級等
 }
@@ -17,6 +20,41 @@ interface UserContextType {
   logout: () => void;
 }
 
+const persistUserSession = (value: User | null) => {
+  if (typeof window === 'undefined') return;
+  try {
+    if (value) {
+      const payload = JSON.stringify(value);
+      window.sessionStorage.setItem(USER_STORAGE_KEY, payload);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    } else {
+      window.sessionStorage.removeItem(USER_STORAGE_KEY);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    }
+  } catch (err) {
+    console.error('Failed to persist user session:', err);
+  }
+};
+
+const readStoredUser = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const sessionValue = window.sessionStorage.getItem(USER_STORAGE_KEY);
+    if (sessionValue) {
+      return sessionValue;
+    }
+    const localValue = window.localStorage.getItem(USER_STORAGE_KEY);
+    if (localValue) {
+      window.sessionStorage.setItem(USER_STORAGE_KEY, localValue);
+      window.localStorage.removeItem(USER_STORAGE_KEY);
+    }
+    return localValue;
+  } catch (err) {
+    console.error('Failed to access user session storage:', err);
+    return null;
+  }
+};
+
 // 建立上下文
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -26,6 +64,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (user: User) => {
     setCurrentUser(user);
+    persistUserSession(user);
   };
 
   const logout = async () => {
@@ -35,7 +74,22 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.error('Logout failed:', err);
     }
     setCurrentUser(null);
+    persistUserSession(null);
   };
+
+  useEffect(() => {
+    const stored = readStoredUser();
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed && parsed.id && parsed.username) {
+        setCurrentUser(parsed);
+      }
+    } catch (err) {
+      console.error('Failed to restore user session:', err);
+      persistUserSession(null);
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ currentUser, login, logout }}>
