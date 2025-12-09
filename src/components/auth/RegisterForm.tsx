@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessageCircle, Zap } from 'lucide-react';
 
-const API_BASE_URL = 'http://35.201.233.231:8089';
+const API_BASE_URL = import.meta.env.VITE_AUTH_URL;
 
 export const RegisterForm = () => {
   const [formData, setFormData] = useState({

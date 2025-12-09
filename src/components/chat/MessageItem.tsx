@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const usernameCache = new Map<string, string>();
 const fetchPromises = new Map<string, Promise<string>>();
-
+const API_BASE_URL = import.meta.env.VITE_USER_URL;
 interface MessageItemProps {
   message: {
     id: string;
@@ -39,7 +39,7 @@ export const MessageItem = ({ message }: MessageItemProps) => {
 
     if (!request) {
       request = axios
-        .get(`http://35.229.145.142:8087/user/${message.username}`)
+        .get(`${API_BASE_URL}/user/${message.username}`)
         .then(res => {
           const name = res.data?.name || res.data?.username || message.username;
           usernameCache.set(message.username, name);

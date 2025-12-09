@@ -55,13 +55,13 @@ export const ChatRoom = () => {
   const currentUserId = currentUser?.id;
   const normalizedRoomId = roomId || 'general';
   const displayRoomName = normalizedRoomId.charAt(0).toUpperCase() + normalizedRoomId.slice(1);
-
+  const API_BASE_URL = import.meta.env.VITE_CHAT_URL;
   useEffect(() => {
     if (!currentUser) return;
     // Replace with your JWT token logic
     const token = getStoredToken();
     if (!token) return;
-    ws.current = new WebSocket(`ws://104.199.177.140:8088/ws/chat?token=${token}`);
+    ws.current = new WebSocket(`wss://${API_BASE_URL}/ws/chat?token=${token}`);
     ws.current.onopen = () => {
       console.log('WebSocket connected');
     };
@@ -100,7 +100,7 @@ export const ChatRoom = () => {
     if (!roomId) return;
     // Always use lowercase for roomId, and map "General" to "general"
     const apiRoomId = roomId.toLowerCase() === "general" ? "general" : roomId;
-    fetch(`http://104.199.177.140:8088/chat/history/${apiRoomId}`)
+    fetch(`${API_BASE_URL}/chat/history/${apiRoomId}`)
       .then(res => res.json())
       .then((data: ApiMessage[]) => {
         // Map API response to Message type
