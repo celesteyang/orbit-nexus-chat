@@ -6,6 +6,7 @@ import { MessageInput } from './MessageInput';
 import { OnlineUsers } from './OnlineUsers';
 import { RoomHeader } from './RoomHeader';
 import { useUser } from '../providers/UserContext';
+import { buildHttpUrl, buildWebSocketUrl, normalizeApiBase } from '@/lib/api';
 
 interface Message {
   id: string;
@@ -55,13 +56,15 @@ export const ChatRoom = () => {
   const currentUserId = currentUser?.id;
   const normalizedRoomId = roomId || 'general';
   const displayRoomName = normalizedRoomId.charAt(0).toUpperCase() + normalizedRoomId.slice(1);
-  const API_BASE_URL = import.meta.env.VITE_CHAT_URL;
+  const API_BASE_URL = normalizeApiBase(import.meta.env.VITE_CHAT_URL);
   useEffect(() => {
     if (!currentUser) return;
     // Replace with your JWT token logic
     const token = getStoredToken();
     if (!token) return;
-    ws.current = new WebSocket(`wss://${API_BASE_URL}/ws/chat?token=${token}`);
+    const wsUrl = buildWebSocketUrl(API_BASE_URL, '/ws/chat');
+    if (!wsUrl) return;
+    ws.current = new WebSocket(`${wsUrl}?token=${token}`);
     ws.current.onopen = () => {
       console.log('WebSocket connected');
     };
@@ -100,7 +103,7 @@ export const ChatRoom = () => {
     if (!roomId) return;
     // Always use lowercase for roomId, and map "General" to "general"
     const apiRoomId = roomId.toLowerCase() === "general" ? "general" : roomId;
-    fetch(`${API_BASE_URL}/chat/history/${apiRoomId}`)
+    fetch(buildHttpUrl(API_BASE_URL, `/chat/history/${apiRoomId}`))
       .then(res => res.json())
       .then((data: ApiMessage[]) => {
         // Map API response to Message type

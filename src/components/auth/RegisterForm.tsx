@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessageCircle, Zap } from 'lucide-react';
+import { buildHttpUrl, normalizeApiBase } from '@/lib/api';
 
-const API_BASE_URL = import.meta.env.VITE_AUTH_URL;
+const API_BASE_URL = normalizeApiBase(import.meta.env.VITE_AUTH_URL);
 
 export const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ export const RegisterForm = () => {
     setSuccessMessage('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/register`, formData);
+      const response = await axios.post(buildHttpUrl(API_BASE_URL, '/register'), formData);
 
       console.log('Registration successful:', response.data);
       setSuccessMessage('註冊成功！您現在可以登入了。');

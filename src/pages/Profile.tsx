@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessageCircle, User, Shield, Lock, Loader2 } from 'lucide-react';
 import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_AUTH_URL;
+import { buildHttpUrl, normalizeApiBase } from '@/lib/api';
+const API_BASE_URL = normalizeApiBase(import.meta.env.VITE_AUTH_URL);
 const Profile = () => {
     const { currentUser } = useUser();
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Profile = () => {
         setMsg('');
         try {
             await axios.post(
-                `${API_BASE_URL}/change-password`,
+                buildHttpUrl(API_BASE_URL, '/change-password'),
                 {
                     old_password: form.oldPwd,
                     new_password: form.newPwd,
