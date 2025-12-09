@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, MessageCircle, Zap } from 'lucide-react';
 import { useUser } from '../providers/UserContext';
-const API_BASE_URL = import.meta.env.VITE_AUTH_URL;
+import { buildHttpUrl, normalizeApiBase } from '@/lib/api';
+const API_BASE_URL = normalizeApiBase(import.meta.env.VITE_AUTH_URL);
 
 const persistToken = (token: string) => {
   if (typeof window === 'undefined') return;
@@ -42,7 +43,7 @@ export const LoginForm = () => {
     setError('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, formData, {
+      const response = await axios.post(buildHttpUrl(API_BASE_URL, '/login'), formData, {
         withCredentials: true,
       });
 

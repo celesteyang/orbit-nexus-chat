@@ -1,7 +1,8 @@
 // src/components/providers/UserContext.tsx
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_AUTH_URL;
+import { buildHttpUrl, normalizeApiBase } from '@/lib/api';
+const API_BASE_URL = normalizeApiBase(import.meta.env.VITE_AUTH_URL);
 const USER_STORAGE_KEY = 'currentUser';
 
 // 定義用戶資訊的型別
@@ -69,7 +70,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/logout`, {}, { withCredentials: true });
+      await axios.post(buildHttpUrl(API_BASE_URL, '/logout'), {}, { withCredentials: true });
     } catch (err) {
       console.error('Logout failed:', err);
     }
