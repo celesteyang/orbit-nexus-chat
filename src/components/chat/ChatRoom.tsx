@@ -61,7 +61,7 @@ export const ChatRoom = () => {
     // Replace with your JWT token logic
     const token = getStoredToken();
     if (!token) return;
-    ws.current = new WebSocket(`wss://${API_BASE_URL}/ws/chat?token=${token}`);
+    ws.current = new WebSocket(`ws://${API_BASE_URL}/ws/chat?token=${token}`);
     ws.current.onopen = () => {
       console.log('WebSocket connected');
     };
